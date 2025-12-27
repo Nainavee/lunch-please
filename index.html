@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunch?</title>
+    <style>
+        /* Theme Variables */
+        :root {
+            --primary-bg: linear-gradient(135deg, #ffeef8 0%, #ffe9f5 25%, #e6f3ff 50%, #fff0f8 75%, #ffe9f0 100%);
+            --text-primary: #ff69b4;
+            --text-secondary: #ff9ec7;
+            --button-yes-bg: #ffb3d9;
+            --button-yes-hover: #ff8dc7;
+            --button-no-bg: #e0e0e0;
+            --button-no-hover: #ffc4e1;
+            --shadow-color: rgba(255, 182, 193, 0.4);
+            --cursor-normal: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28">🐱</text></svg>') 16 16, auto;
+            --cursor-angry: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28">🔫</text></svg>') 16 16, auto;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--primary-bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: var(--cursor-normal);
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px var(--shadow-color);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.3);
+        }
+
+        .emoji {
+            font-size: 4em;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .question {
+            color: var(--text-secondary);
+            font-size: 1.5em;
+            margin: 30px 0;
+            font-weight: 500;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+            position: relative;
+            height: 80px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border: none;
+            border-radius: 50px;
+            cursor: var(--cursor-normal);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            position: absolute;
+        }
+
+        #yesBtn {
+            background: var(--button-yes-bg);
+            color: white;
+            left: 50%;
+            transform: translateX(-100px);
+        }
+
+        #yesBtn:hover {
+            background: var(--button-yes-hover);
+            transform: translateX(-100px) scale(1.1);
+            box-shadow: 0 12px 30px var(--shadow-color);
+        }
+
+        #noBtn {
+            background: var(--button-no-bg);
+            color: #666;
+            left: 50%;
+            transform: translateX(20px);
+            transition: all 0.1s ease;
+        }
+
+        #noBtn:hover {
+            background: var(--button-no-hover);
+        }
+
+        .angry-cursor {
+            cursor: var(--cursor-angry) !important;
+        }
+
+        /* Success screen */
+        .success-screen {
+            display: none;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .success-screen.active {
+            display: block;
+        }
+
+        .dancing-cat {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            animation: dance 0.5s infinite;
+        }
+
+        @keyframes dance {
+            0%, 100% { transform: rotate(-10deg) scale(1); }
+            25% { transform: rotate(10deg) scale(1.1); }
+            50% { transform: rotate(-10deg) scale(1); }
+            75% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        .success-text {
+            color: var(--text-primary);
+            font-size: 2em;
+            margin-top: 30px;
+            font-weight: bold;
+        }
+
+        .hearts {
+            font-size: 2em;
+            margin-top: 20px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .subtext {
+            color: var(--text-secondary);
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="questionScreen">
+            <div class="emoji">🍱</div>
+            <h1>Hey there!</h1>
+            <p class="question">Would you like to go to canteen for lunch with me? 🥰</p>
+            <div class="button-container">
+                <button id="yesBtn">Yes! 💕</button>
+                <button id="noBtn">No 😢</button>
+            </div>
+        </div>
+
+        <div id="successScreen" class="success-screen">
+            <img src="cat.gif" alt="Dancing cat" class="dancing-cat">
+            <div class="success-text">Yay! I'm so excited! 🎉</div>
+            <div class="hearts">💖 💝 💗 💓 💕</div>
+            <p class="subtext">This is going to be pawsome! 🐾</p>
+        </div>
+    </div>
+
+    <script>
+        // Theme configuration
+        const theme = {
+            cursorNormal: 'var(--cursor-normal)',
+            cursorAngry: 'var(--cursor-angry)',
+            escapeSpeed: 100, // pixels to move away
+            buttonMoveDelay: 0 // milliseconds before button moves
+        };
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionScreen = document.getElementById('questionScreen');
+        const successScreen = document.getElementById('successScreen');
+
+        let noBtnAttempts = 0;
+
+        // Handle No button hover/click - make it run away
+        function moveNoButton(e) {
+            const btnRect = noBtn.getBoundingClientRect();
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            
+            // Calculate boundaries to keep button inside the white container
+            const minX = containerRect.left + 20;
+            const maxX = containerRect.right - btnRect.width - 20;
+            const minY = containerRect.top + 100;
+            const maxY = containerRect.bottom - btnRect.height - 20;
+            
+            // Generate random position within container bounds
+            let newX = minX + Math.random() * (maxX - minX);
+            let newY = minY + Math.random() * (maxY - minY);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = newX + 'px';
+            noBtn.style.top = newY + 'px';
+            noBtn.style.transform = 'none';
+            
+            // Change cursor to angry
+            document.body.classList.add('angry-cursor');
+            noBtnAttempts++;
+            
+            // Make the no button smaller each time
+            if (noBtnAttempts > 3) {
+                noBtn.style.transform = `scale(${Math.max(0.5, 1 - (noBtnAttempts * 0.08))})`;
+            }
+        }
+
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('click', moveNoButton);
+        noBtn.addEventListener('touchstart', moveNoButton);
+
+        // Handle Yes button click
+        yesBtn.addEventListener('click', () => {
+            questionScreen.style.display = 'none';
+            successScreen.classList.add('active');
+            document.body.classList.remove('angry-cursor');
+            
+            // Create confetti effect
+            createConfetti();
+        });
+
+        // Simple confetti effect
+        function createConfetti() {
+            const colors = ['#ff69b4', '#ffb3d9', '#ff9ec7', '#ffc4e1', '#ffe9f5'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.zIndex = '1000';
+                    document.body.appendChild(confetti);
+                    
+                    let pos = -10;
+                    const fall = setInterval(() => {
+                        if (pos > window.innerHeight) {
+                            clearInterval(fall);
+                            confetti.remove();
+                        } else {
+                            pos += 5;
+                            confetti.style.top = pos + 'px';
+                            confetti.style.transform = `rotate(${pos}deg)`;
+                        }
+                    }, 20);
+                }, i * 30);
+            }
+        }
+    </script>
+</body>
+</html>
